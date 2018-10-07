@@ -144,7 +144,7 @@ void Game::draw(sf::RenderWindow & window)
 
 void Game::generateNotes()
 {
-	for (int i = 0; i < 700; i++)
+	for (int i = 0; i < 607; i++)
 		notes_.emplace_back(sf::seconds(5 + 60/168.f * i), sf::seconds(5 + 60 / 168.f * (i+0.5)), 500, rand() % NB_SECTIONS);
 }
 
