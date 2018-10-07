@@ -19,7 +19,7 @@ static constexpr float POP_UP_DISTANCE = REFERENCE_MARGIN + 100.f;
 
 static constexpr size_t NB_SECTIONS = 8;
 
-static const std::string ROOT_PATH = "";
+static const std::string ROOT_PATH = "../../";
 static const std::string IMG_PATH = ROOT_PATH + "img/";
 static const std::string FONT_PATH = ROOT_PATH + "font/";
 static const std::string MUSIC_PATH = ROOT_PATH + "music/";
