@@ -33,7 +33,7 @@ std::string Utils::getSongInfo(std::string file, bool shrt)
 	std::getline(fichier, buffer);
 	res += Utils::splitString(buffer, '=').back();
 
-	if (shrt)
+	if (!shrt)
 	{
 		std::getline(fichier, buffer);
 

@@ -27,7 +27,7 @@ void Score::drawConsole(std::string path)
 	std::cout << std::endl;
 	std::cout << " -------------------------------- " << std::endl;
 	std::cout << "   Results  " << std::endl;
-	std::cout << "      " << Utils::getSongInfo(path) << std::endl;
+	std::cout << "      " << Utils::getSongInfo(path, true) << std::endl;
 	std::cout << " -------------------------------- " << std::endl;
 	
 
