@@ -22,11 +22,15 @@ void PopUp::draw(sf::RenderWindow & window, sf::Time elapsedTime)
 {
 	opacity_ -= speed_ * elapsedTime.asSeconds();
 	color_.a = opacity_;
-	text_.setOutlineColor({0, 0, 0, (sf::Uint8)opacity_});
-	text_.setFillColor(color_);
-
 	if (opacity_ < 0)
 		dead_ = true;
 
-	window.draw(text_);
+
+	if (!dead_)
+	{
+		text_.setOutlineColor({ 0, 0, 0, (sf::Uint8)opacity_ });
+		text_.setFillColor(color_);
+		window.draw(text_);
+	}
+	
 }
