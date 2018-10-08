@@ -64,10 +64,25 @@ void Game::drawSection(sf::RenderWindow & window)
 		window.draw(sections_[section_]);
 }
 
-void Game::update(sf::RenderWindow &window)
+void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 {
 	elapsedTime_ = clock_.getElapsedTime();
-	songTime_ += elapsedTime_;
+
+	if (isPlaying_)
+	{
+		unsigned int songPosition;
+		channel_->getPosition(&songPosition, FMOD_TIMEUNIT_MS);
+		songTime_ = sf::milliseconds(songPosition);
+	}
+	else if (songTime_ > sf::Time::Zero)
+	{
+		soundSystem->playSound(song_, 0, false, &channel_);
+		isPlaying_ = true;
+	}
+	else
+		songTime_ += elapsedTime_;
+	
+
 	clock_.restart();
 
 	section_ = -1;
@@ -117,12 +132,13 @@ void Game::update(sf::RenderWindow &window)
 		}
 	}
 		
-	scoreText_.setString(std::to_string(score_));
+	scoreText_.setString(std::to_string(songTime_.asSeconds()));
 }
 
 void Game::draw(sf::RenderWindow & window)
 {
 	window.clear();
+
 
 	window.draw(background_);
 	drawSection(window);
@@ -144,16 +160,24 @@ void Game::draw(sf::RenderWindow & window)
 
 void Game::generateNotes()
 {
-	for (int i = 0; i < 607; i++)
-		notes_.emplace_back(sf::seconds(5 + 60/168.f * i), sf::seconds(5 + 60 / 168.f * (i+0.5)), 500, rand() % NB_SECTIONS);
+	for (int i = 0; i < 617; i++)
+		notes_.emplace_back(sf::seconds(1.582 + 60/168.f * i), sf::seconds(1.582 + 60 / 168.f * (i+0.5)), 500, rand() % NB_SECTIONS);
 }
 
 
-void Game::play(sf::RenderWindow & window)
+void Game::play(sf::RenderWindow & window, FMOD::System *soundSystem)
 {
 	srand(time(NULL));
+
+	// Load Song
+	std::string path = MUSIC_PATH + "Yorushika.ogg";
+	soundSystem->createStream(path.c_str(), FMOD_LOOP_NORMAL | FMOD_2D | FMOD_CREATESTREAM, 0, &song_);
+
 	generateNotes();
 
+	if (notes_.front().getStartTime().asSeconds() < NOTE_START_DISTANCE / notes_.front().getSpeed())
+		songTime_ = -(sf::seconds(NOTE_START_DISTANCE / notes_.front().getSpeed()) - notes_.front().getStartTime());
+	
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -163,10 +187,17 @@ void Game::play(sf::RenderWindow & window)
 				window.close();
 		}
 
-		update(window);
+		update(window, soundSystem);
 		draw(window);
 		
 		sf::sleep(sf::milliseconds(1));
 	}
+
+	song_->release();
+}
+
+Game::~Game()
+{
+
 }
 

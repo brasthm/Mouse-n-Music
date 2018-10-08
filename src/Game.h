@@ -29,6 +29,11 @@ class Game
 		
 		std::vector<PopUp> popups_;
 
+		FMOD::Sound *song_;
+		FMOD::Channel *channel_ = 0;
+
+		bool isPlaying_ = false;
+
 		int section_ = -1;
 		int score_ = 0;
 		sf::Vector2f mousePosition_;
@@ -44,14 +49,15 @@ class Game
 		float getDistance();
 		void drawCursor(sf::RenderWindow &window);
 		void drawSection(sf::RenderWindow & window);
-		void update(sf::RenderWindow &window);
+		void update(sf::RenderWindow &window, FMOD::System *soundSystem);
 		void draw(sf::RenderWindow &window);
 		void generateNotes();
 
 
 	public:
 		Game();
-		void play(sf::RenderWindow &window);
+		void play(sf::RenderWindow &window, FMOD::System *soundSystem);
+		~Game();
 		
 };
 

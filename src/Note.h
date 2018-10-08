@@ -22,6 +22,8 @@ class Note
 		inline bool isDead() const { return dead_; }
 		inline bool isActive() const { return active_; }
 		inline int getSection() const { return section_; }
+		inline float getSpeed() const { return speed_; }
+		inline sf::Time getStartTime() const { return start_; }
 
 		int getScore();
 
