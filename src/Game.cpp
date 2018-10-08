@@ -1,4 +1,5 @@
 #include "Game.h"
+#include <iostream>
 
 Game::Game()
 {
@@ -74,7 +75,7 @@ void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 		channel_->getPosition(&songPosition, FMOD_TIMEUNIT_MS);
 		songTime_ = sf::milliseconds(songPosition);
 	}
-	else if (songTime_ > sf::Time::Zero)
+	else if (!isPlaying_ && songTime_ > sf::Time::Zero)
 	{
 		soundSystem->playSound(song_, 0, false, &channel_);
 		isPlaying_ = true;
@@ -132,7 +133,7 @@ void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 		}
 	}
 		
-	scoreText_.setString(std::to_string(songTime_.asSeconds()));
+	scoreText_.setString(std::to_string(score_));
 }
 
 void Game::draw(sf::RenderWindow & window)
@@ -158,28 +159,66 @@ void Game::draw(sf::RenderWindow & window)
 	window.display();
 }
 
-void Game::generateNotes()
+void Game::generateNotes(std::string mapFile)
 {
-	for (int i = 0; i < 617; i++)
-		notes_.emplace_back(sf::seconds(1.582 + 60/168.f * i), sf::seconds(1.582 + 60 / 168.f * (i+0.5)), 500, rand() % NB_SECTIONS);
+	std::ifstream fichier(MUSIC_PATH + "/" + mapFile + "/" + mapFile + ".mnm");
+
+	std::string buffer = "";
+
+	// Read Song Name
+	std::getline(fichier, buffer);
+	songName_ = Utils::splitString(buffer, '=').back();
+
+	// Read Song Composer
+	std::getline(fichier, buffer);
+	songComposer_ = Utils::splitString(buffer, '=').back();
+
+	// Read Song Location
+	std::getline(fichier, buffer);
+	songPath_ = MUSIC_PATH + "/" + mapFile + "/" + Utils::splitString(buffer, '=').back();
+
+	// Read BPM
+	std::getline(fichier, buffer);
+	// Read Length
+	std::getline(fichier, buffer);
+
+	// Read DATA
+	std::getline(fichier, buffer);
+	while (std::getline(fichier, buffer))
+	{
+		auto data = Utils::splitString(buffer, ' ');
+		notes_.emplace_back(sf::seconds(std::stof(data[0])), sf::seconds(std::stof(data[1])), std::stoi(data[2]), std::stoi(data[3]));
+	}
+		
+
+	fichier.close();
 }
 
 
-void Game::play(sf::RenderWindow & window, FMOD::System *soundSystem)
+void Game::play(sf::RenderWindow & window, FMOD::System *soundSystem, std::string filePath)
 {
 	srand(time(NULL));
 
-	// Load Song
-	std::string path = MUSIC_PATH + "Yorushika.ogg";
-	soundSystem->createStream(path.c_str(), FMOD_LOOP_NORMAL | FMOD_2D | FMOD_CREATESTREAM, 0, &song_);
+	generateNotes(filePath);
 
-	generateNotes();
+	// Load Song
+	soundSystem->createStream(songPath_.c_str(), FMOD_2D | FMOD_CREATESTREAM, 0, &song_);
 
 	if (notes_.front().getStartTime().asSeconds() < NOTE_START_DISTANCE / notes_.front().getSpeed())
 		songTime_ = -(sf::seconds(NOTE_START_DISTANCE / notes_.front().getSpeed()) - notes_.front().getStartTime());
 	
-	while (window.isOpen())
+	bool songIsOver = false;
+
+
+	clock_.restart();
+	while (window.isOpen() && !songIsOver)
 	{
+		if (isPlaying_)
+		{
+			channel_->isPlaying(&songIsOver);
+			songIsOver = !songIsOver;
+		}
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{

@@ -7,10 +7,12 @@
 #include <cmath>
 #include <ctime>
 #include <fmod.hpp>
+#include <fstream>
 
 #include "Constantes.h"
 #include "Note.h"
 #include "PopUp.h"
+#include "Utils.h"
 
 
 class Game
@@ -29,6 +31,9 @@ class Game
 		
 		std::vector<PopUp> popups_;
 
+		std::string songName_;
+		std::string songComposer_;
+		std::string songPath_;
 		FMOD::Sound *song_;
 		FMOD::Channel *channel_ = 0;
 
@@ -51,12 +56,12 @@ class Game
 		void drawSection(sf::RenderWindow & window);
 		void update(sf::RenderWindow &window, FMOD::System *soundSystem);
 		void draw(sf::RenderWindow &window);
-		void generateNotes();
+		void generateNotes(std::string mapFile);
 
 
 	public:
 		Game();
-		void play(sf::RenderWindow &window, FMOD::System *soundSystem);
+		void play(sf::RenderWindow &window, FMOD::System *soundSystem, std::string filePath);
 		~Game();
 		
 };
