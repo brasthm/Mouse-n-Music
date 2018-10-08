@@ -156,15 +156,14 @@ void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 
 void Game::draw(sf::RenderWindow & window)
 {
-	window.clear();
-
-
-	window.draw(background_);
+	window.clear(sf::Color(200,200,200));
+	
 	drawSection(window);
 
 	for (int i = 0; i < notes_.size(); i++)
 		notes_[i].draw(window);
 
+	window.draw(background_);
 
 	scoreText_.setPosition((WINDOW_W - scoreText_.getGlobalBounds().width) / 2, REFERENCE_Y - 100);
 	window.draw(scoreText_);
