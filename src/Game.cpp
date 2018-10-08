@@ -112,15 +112,33 @@ void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 			current_++;
 			score_ += s;
 			if (s == 0)
+			{
 				popups_.emplace_back(neig_, "Miss", sf::Color(244, 101, 101), notes_[i].getSection());
-			else if(s <= 40)
+				score_.incMiss();
+			}
+				
+			else if (s <= 40)
+			{
 				popups_.emplace_back(neig_, "Bad", sf::Color(244, 146, 101), notes_[i].getSection());
+				score_.incBad();
+			}
+				
 			else if (s <= 70)
+			{
 				popups_.emplace_back(neig_, "Ok", sf::Color(101, 144, 226), notes_[i].getSection());
+				score_.incOk();
+			}
 			else if (s <= 90)
+			{
 				popups_.emplace_back(neig_, "Good", sf::Color(155, 244, 101), notes_[i].getSection());
+				score_.incGood();
+			}
 			else
+			{
 				popups_.emplace_back(neig_, "Perfect", sf::Color(217, 101, 244), notes_[i].getSection());
+				score_.incPerfect();
+			}
+				
 		}
 	}
 
@@ -133,7 +151,7 @@ void Game::update(sf::RenderWindow &window, FMOD::System *soundSystem)
 		}
 	}
 		
-	scoreText_.setString(std::to_string(score_));
+	scoreText_.setString(std::to_string(score_.getScore()));
 }
 
 void Game::draw(sf::RenderWindow & window)
@@ -233,6 +251,8 @@ void Game::play(sf::RenderWindow & window, FMOD::System *soundSystem, std::strin
 	}
 
 	song_->release();
+
+	score_.drawConsole(filePath);
 }
 
 Game::~Game()

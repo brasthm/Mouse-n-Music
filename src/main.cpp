@@ -22,6 +22,7 @@ int main()
 	
 	window.setMouseCursorVisible(false);
 
+
 	game.play(window, system, choice);
 
 	system->close();

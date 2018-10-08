@@ -12,7 +12,6 @@
 class SongSelection
 {
 	private:
-		std::string getSongInfo(std::string file);
 	public:
 		SongSelection();
 		void play(std::string &choice);

@@ -20,3 +20,31 @@ std::vector<std::string> Utils::splitString(std::string str, char sep)
 
 	return res;
 }
+
+std::string Utils::getSongInfo(std::string file, bool shrt)
+{
+	std::string res = "";
+	std::ifstream fichier(MUSIC_PATH + file + "/" + file + ".mnm");
+
+	std::string buffer;
+	std::getline(fichier, buffer);
+	res += Utils::splitString(buffer, '=').back() + " - ";
+
+	std::getline(fichier, buffer);
+	res += Utils::splitString(buffer, '=').back();
+
+	if (shrt)
+	{
+		std::getline(fichier, buffer);
+
+		std::getline(fichier, buffer);
+		res += " (BPM : " + Utils::splitString(buffer, '=').back() + " / Length : ";
+
+		std::getline(fichier, buffer);
+		res += Utils::splitString(buffer, '=').back() + ")";
+	}
+	
+
+	fichier.close();
+	return res;
+}

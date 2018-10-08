@@ -13,6 +13,8 @@
 #include "Note.h"
 #include "PopUp.h"
 #include "Utils.h"
+#include "Score.h"
+
 
 
 class Game
@@ -40,7 +42,7 @@ class Game
 		bool isPlaying_ = false;
 
 		int section_ = -1;
-		int score_ = 0;
+		Score score_;
 		sf::Vector2f mousePosition_;
 
 		sf::Clock clock_;
