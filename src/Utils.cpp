@@ -36,6 +36,7 @@ std::string Utils::getSongInfo(std::string file, bool shrt)
 	if (!shrt)
 	{
 		std::getline(fichier, buffer);
+		std::getline(fichier, buffer);
 
 		std::getline(fichier, buffer);
 		res += " (BPM : " + Utils::splitString(buffer, '=').back() + " / Length : ";

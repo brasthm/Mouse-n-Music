@@ -194,6 +194,9 @@ void Game::generateNotes(std::string mapFile)
 	std::getline(fichier, buffer);
 	songPath_ = MUSIC_PATH + "/" + mapFile + "/" + Utils::splitString(buffer, '=').back();
 
+	// Read Offset
+	std::getline(fichier, buffer);
+
 	// Read BPM
 	std::getline(fichier, buffer);
 	// Read Length
