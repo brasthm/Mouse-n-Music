@@ -1,6 +1,7 @@
 Name=Koko Kara, Koko Kara
 Composer=Hige Driver
 Path=koko kara.mp3
+Offset=0.7
 BPM=175
 Length=4:28.814
 DATA
